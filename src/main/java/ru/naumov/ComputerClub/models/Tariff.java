@@ -5,15 +5,15 @@ package ru.naumov.ComputerClub.models;
 public class Tariff {
 
     private int id;
-    private String name;
+    private String tariffName;
     private int price;
     private String description;
 
     public Tariff() {
     }
 
-    public Tariff(String name, int price, String description) {
-        this.name = name;
+    public Tariff(String tariffName, int price, String description) {
+        this.tariffName = tariffName;
         this.price = price;
         this.description = description;
     }
@@ -26,12 +26,12 @@ public class Tariff {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTariffName() {
+        return tariffName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTariffName(String tariffName) {
+        this.tariffName = tariffName;
     }
 
     public int getPrice() {

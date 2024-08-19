@@ -6,5 +6,4 @@ import ru.naumov.ComputerClub.models.Client;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer> {
-
 }
