@@ -1,4 +1,4 @@
-package ru.naumov.ComputerClub.dto;
+package ru.naumov.ComputerClub.dto.ClientDTO;
 
 import java.util.List;
 

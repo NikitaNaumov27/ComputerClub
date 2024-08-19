@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ru.naumov.ComputerClub.dto.ClientDTO;
-import ru.naumov.ComputerClub.dto.ClientResponse;
+import ru.naumov.ComputerClub.dto.ClientDTO.ClientDTO;
+import ru.naumov.ComputerClub.dto.ClientDTO.ClientResponse;
 import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.services.ClientService;
 import ru.naumov.ComputerClub.util.ClientError.ClientErrorResponse;
@@ -33,20 +33,20 @@ public class ClientController {
 
     @GetMapping()
     public ClientResponse getAllClients() {
-        return new ClientResponse(clientService.getAllClients().stream().map(this::convertToClientDTO)
+        return new ClientResponse(clientService.findAllClients().stream().map(this::convertToClientDTO)
                 .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     public Client getClientById(@PathVariable int id) {
-        return clientService.getClientById(id);
+        return clientService.findClientById(id);
     }
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addClient(@RequestBody @Valid ClientDTO clientDTO,
                                                 BindingResult bindingResult) {
         checkException(bindingResult);
-        clientService.addClient(convertToClient(clientDTO));
+        clientService.saveClient(convertToClient(clientDTO));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

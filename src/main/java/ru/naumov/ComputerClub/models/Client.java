@@ -1,12 +1,10 @@
 package ru.naumov.ComputerClub.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
-import java.time.LocalDateTime;
+
+import java.time.LocalTime;
 
 // Клиент: содержит информацию о клиенте (имя, возраст, время начала сессии, время окончания сессии, статус активности).
 @Entity
@@ -31,20 +29,22 @@ public class Client {
 
     @Column(name = "session_start_time")
     @NotNull
-    private LocalDateTime sessionStartTime;
+    private LocalTime sessionStartTime;
 
     @Column(name = "session_end_time")
     @NotNull
-    private LocalDateTime sessionEndTime;
+    //@Pattern(regexp = "\\d{2}:\\d{2}:\\d{2}",message = "123")
+    private LocalTime sessionEndTime;
 
     @Column(name = "is_active")
     @NotNull
+    //@Pattern(regexp = "\\d{2}:\\d{2}:\\d{2}",message = "123")
     private boolean isActive;
 
     public Client() {
     }
 
-    public Client(String clientName, int age, LocalDateTime sessionStartTime, LocalDateTime sessionEndTime, boolean isActive) {
+    public Client(String clientName, int age, LocalTime sessionStartTime, LocalTime sessionEndTime, boolean isActive) {
         this.clientName = clientName;
         this.age = age;
         this.sessionStartTime = sessionStartTime;
@@ -76,19 +76,19 @@ public class Client {
         this.clientName = clientName;
     }
 
-    public @NotNull LocalDateTime getSessionStartTime() {
+    public LocalTime getSessionStartTime() {
         return sessionStartTime;
     }
 
-    public void setSessionStartTime(@NotNull LocalDateTime sessionStartTime) {
+    public void setSessionStartTime(LocalTime sessionStartTime) {
         this.sessionStartTime = sessionStartTime;
     }
 
-    public @NotNull LocalDateTime getSessionEndTime() {
+    public LocalTime getSessionEndTime() {
         return sessionEndTime;
     }
 
-    public void setSessionEndTime(@NotNull LocalDateTime sessionEndTime) {
+    public void setSessionEndTime(LocalTime sessionEndTime) {
         this.sessionEndTime = sessionEndTime;
     }
 

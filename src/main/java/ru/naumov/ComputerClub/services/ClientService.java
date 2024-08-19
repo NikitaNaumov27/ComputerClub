@@ -20,17 +20,17 @@ public class ClientService {
         this.clientRepository = clientRepository;
     }
 
-    public List<Client> getAllClients() {
+    public List<Client> findAllClients() {
         return clientRepository.findAll();
     }
 
-    public Client getClientById(int id) {
+    public Client findClientById(int id) {
         Optional<Client> client = clientRepository.findById(id);
         return client.orElse(null);
     }
 
     @Transactional
-    public void addClient(Client client) {
+    public void saveClient(Client client) {
         clientRepository.save(client);
     }
 
@@ -44,9 +44,4 @@ public class ClientService {
     public void deleteClient(int id) {
         clientRepository.deleteById(id);
     }
-
-   /* public Client getClientByName(String name) {
-        return clientRepository.findByName(name);
-    }
-    */
 }

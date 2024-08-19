@@ -1,11 +1,8 @@
-package ru.naumov.ComputerClub.dto;
+package ru.naumov.ComputerClub.dto.ClientDTO;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class ClientDTO {
 
@@ -19,10 +16,12 @@ public class ClientDTO {
     private int age;
 
     @NotNull
-    private LocalDateTime sessionStartTime;
+    //@Pattern(regexp = "\\d{2}:\\d{2}:\\d{2}",message = "123")
+    private LocalTime sessionStartTime;
 
     @NotNull
-    private LocalDateTime sessionEndTime;
+    //@Pattern(regexp = "\\d{2}:\\d{2}:\\d{2}",message = "123")
+    private LocalTime sessionEndTime;
 
     @NotNull
     private boolean isActive;
@@ -43,19 +42,19 @@ public class ClientDTO {
         this.age = age;
     }
 
-    public LocalDateTime getSessionStartTime() {
+    public LocalTime getSessionStartTime() {
         return sessionStartTime;
     }
 
-    public void setSessionStartTime(LocalDateTime sessionStartTime) {
+    public void setSessionStartTime(LocalTime sessionStartTime) {
         this.sessionStartTime = sessionStartTime;
     }
 
-    public LocalDateTime getSessionEndTime() {
+    public LocalTime getSessionEndTime() {
         return sessionEndTime;
     }
 
-    public void setSessionEndTime(LocalDateTime sessionEndTime) {
+    public void setSessionEndTime(LocalTime sessionEndTime) {
         this.sessionEndTime = sessionEndTime;
     }
 
