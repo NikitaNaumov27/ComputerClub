@@ -14,6 +14,7 @@ import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.services.ComputerService;
 import ru.naumov.ComputerClub.util.ClientError.ClientException;
 import ru.naumov.ComputerClub.util.ComputerError.ComputerErrorResponse;
+import ru.naumov.ComputerClub.util.ComputerError.ComputerException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,7 +59,6 @@ public class ComputerController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteComputer(@PathVariable int id){
         computerService.deleteComputer(id);
@@ -73,7 +73,7 @@ public class ComputerController {
                 errorMsg.append(error.getField()).append(" - ")
                         .append(error.getDefaultMessage()).append(";");
             }
-            throw new ClientException(errorMsg.toString());
+            throw new ComputerException(errorMsg.toString());
         }
     }
 

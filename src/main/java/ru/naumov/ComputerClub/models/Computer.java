@@ -1,10 +1,10 @@
 package ru.naumov.ComputerClub.models;
 
-//Компьютер: информация о компьютере (номер, статус занятости, характеристики).
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+//Компьютер: информация о компьютере (номер, статус занятости, характеристики).
 
 @Entity
 @Table(name = "Computer")
@@ -15,6 +15,11 @@ public class Computer {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "number")
+    @NotNull
+    @Size(min = 2, max = 20)
+    private String number;
+
     @Column(name = "status")
     @NotNull
     private boolean status;
@@ -22,14 +27,15 @@ public class Computer {
     @Column(name = "specification")
     @NotNull
     @Size(min = 1, max = 50)
-    private String specifications;
+    private String specification;
 
     public Computer() {
     }
 
-    public Computer(boolean status, String specifications) {
+    public Computer(String number, boolean status, String specification) {
+        this.number = number;
         this.status = status;
-        this.specifications = this.specifications;
+        this.specification = specification;
     }
 
     public int getId() {
@@ -40,6 +46,14 @@ public class Computer {
         this.id = id;
     }
 
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
     public boolean isStatus() {
         return status;
     }
@@ -48,11 +62,11 @@ public class Computer {
         this.status = status;
     }
 
-    public String getSpecifications() {
-        return specifications;
+    public String getSpecification() {
+        return specification;
     }
 
-    public void setSpecifications(String specificationsComp) {
-        this.specifications = specifications;
+    public void setSpecification(String specification) {
+        this.specification = specification;
     }
 }

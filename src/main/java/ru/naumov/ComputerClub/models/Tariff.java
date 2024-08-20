@@ -1,12 +1,12 @@
 package ru.naumov.ComputerClub.models;
 
-// Тариф: содержит данные о тарифных планах (название, цена за час, дополнительные услуги).
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+// Тариф: содержит данные о тарифных планах (название, цена за час, дополнительные услуги).
 
 @Entity
 @Table(name = "Tariff")

@@ -9,19 +9,30 @@ public class ComputerDTO {
     private int id;
 
     @NotNull
+    @Size(min = 2, max = 20)
+    private String number;
+
+    @NotNull
     private boolean status;
 
     @NotNull
     @Size(min = 1, max = 50)
-    private String specifications;
+    private String specification;
 
-    @NotNull
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public boolean isStatus() {
@@ -32,11 +43,11 @@ public class ComputerDTO {
         this.status = status;
     }
 
-    public String getSpecifications() {
-        return specifications;
+    public String getSpecification() {
+        return specification;
     }
 
-    public void setSpecifications(String specifications) {
-        this.specifications = specifications;
+    public void setSpecification(String specification) {
+        this.specification = specification;
     }
 }

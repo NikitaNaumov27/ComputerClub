@@ -14,6 +14,7 @@ import ru.naumov.ComputerClub.models.Tariff;
 import ru.naumov.ComputerClub.services.TariffService;
 import ru.naumov.ComputerClub.util.ClientError.ClientException;
 import ru.naumov.ComputerClub.util.TariffError.TariffErrorResponse;
+import ru.naumov.ComputerClub.util.TariffError.TariffException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +73,7 @@ public class TariffController {
                 errorMsg.append(error.getField()).append(" - ")
                         .append(error.getDefaultMessage()).append(";");
             }
-            throw new ClientException(errorMsg.toString());
+            throw new TariffException(errorMsg.toString());
         }
     }
 
@@ -90,5 +91,4 @@ public class TariffController {
                 ex.getMessage(), System.currentTimeMillis());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
 }

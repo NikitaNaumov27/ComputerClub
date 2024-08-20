@@ -8,6 +8,9 @@ import jakarta.validation.constraints.Size;
 public class TariffDTO {
 
     @NotNull
+    private int id;
+
+    @NotNull
     @Size(min = 1, max = 50)
     private String tariffName;
 
@@ -19,7 +22,15 @@ public class TariffDTO {
     @Size(min = 1, max = 50)
     private String description;
 
-    public @NotNull @Size(min = 1, max = 50) String getTariffName() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTariffName() {
         return tariffName;
     }
 
