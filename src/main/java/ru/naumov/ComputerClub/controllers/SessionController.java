@@ -1,6 +1,5 @@
 package ru.naumov.ComputerClub.controllers;
 
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,8 +9,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.naumov.ComputerClub.dto.SessionDTO.SessionDTO;
 import ru.naumov.ComputerClub.dto.SessionDTO.SessionResponse;
+import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.models.Session;
+import ru.naumov.ComputerClub.services.ClientService;
+import ru.naumov.ComputerClub.services.ComputerService;
 import ru.naumov.ComputerClub.services.SessionService;
+import ru.naumov.ComputerClub.services.TariffService;
 import ru.naumov.ComputerClub.util.SessionError.SessionErrorResponse;
 import ru.naumov.ComputerClub.util.SessionError.SessionException;
 
@@ -23,11 +26,17 @@ import java.util.stream.Collectors;
 public class SessionController {
 
     private final SessionService sessionService;
+    private final ClientService clientService;
+    private final ComputerService computerService;
+    private final TariffService tariffService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public SessionController(final SessionService sessionService, final ModelMapper modelMapper) {
+    public SessionController(final SessionService sessionService, ClientService clientService, ComputerService computerService, TariffService tariffService, final ModelMapper modelMapper) {
         this.sessionService = sessionService;
+        this.clientService = clientService;
+        this.computerService = computerService;
+        this.tariffService = tariffService;
         this.modelMapper = modelMapper;
     }
 
@@ -42,51 +51,29 @@ public class SessionController {
         return sessionService.findSessionById(id);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<HttpStatus> addSession(@RequestBody @Valid SessionDTO sessionDTO,
-                                                 BindingResult bindingResult) {
-        checkException(bindingResult);
-        sessionService.saveSession(convertToSession(sessionDTO));
+
+    @PostMapping("/start/{idClient}/{idComputer}/{idTariff}")
+    public ResponseEntity<HttpStatus> startSession(@PathVariable int idClient, @PathVariable int idComputer,
+                                                   @PathVariable int idTariff) {
+       Session session = new Session();
+       session.setClient(clientService.findClientById(idClient));
+       session.setComputer(computerService.findComputerById(idComputer));
+       session.setTariff(tariffService.findTariffById(idTariff));
+       sessionService.startSession(session);
+       session.setTotalPrice(100);
+       sessionService.endSession(session);
+       sessionService.saveSession(session);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-
-
-
-
-
-
-
-
-
-/*
-    @GetMapping("/active")
-    public List<SessionDTO> getActiveSessions() {
-        return sessionService.getActiveSessions();
+    @PatchMapping("/end/{id}")
+    public ResponseEntity<HttpStatus> endSession(@PathVariable int id) {
+        Client client = clientService.findClientById(id);
+        Session session = client.getSession();
+        sessionService.endSession(session);
+        sessionService.saveSession(session);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @GetMapping("/by-client/{clientId}")
-    public List<SessionDTO> getSessionsByClient(@PathVariable int clientId) {
-        return sessionService.getSessionsByClient(clientId);
-    }
-
-    @GetMapping("/by-computer/{computerId}")
-    public List<SessionDTO> getSessionsByComputer(@PathVariable int computerId) {
-        return sessionService.getSessionsByComputer(computerId);
-    }
-
-
-    @PostMapping("/start")
-    public ResponseEntity<SessionDTO> startSession(@RequestBody SessionDTO sessionDTO) {
-        return new ResponseEntity<>(sessionService.startSession(sessionDTO), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/end/{id}")
-    public ResponseEntity<SessionDTO> endSession(@PathVariable int id) {
-        return new ResponseEntity<>(sessionService.endSession(id), HttpStatus.OK);
-    }
-
- */
 
     public void checkException(BindingResult bindingResult){
         if (bindingResult.hasErrors()) {

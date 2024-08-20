@@ -31,18 +31,18 @@ public class Client {
     @NotNull
     private boolean isActive;
 
-    @OneToMany(mappedBy = "client")
-    private List<Session> sessions;
+    @OneToOne(mappedBy = "client")
+    private Session session;
 
     public Client() {
     }
 
     public Client(String clientName, int age, boolean isActive,
-                  List<Session> sessions) {
+                  Session session) {
         this.clientName = clientName;
         this.age = age;
         this.isActive = isActive;
-        this.sessions = sessions;
+        this.session = session;
     }
 
     public int getId() {
@@ -77,11 +77,11 @@ public class Client {
         isActive = active;
     }
 
-    public List<Session> getSessions() {
-        return sessions;
+    public Session getSession() {
+        return session;
     }
 
-    public void setSessions(List<Session> sessions) {
-        this.sessions = sessions;
+    public void setSession(Session session) {
+        this.session = session;
     }
 }

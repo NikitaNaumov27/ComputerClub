@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 // Сессия: отражает информацию о сессии клиента (клиент, компьютер, время начала, время окончания, итоговая стоимость).
@@ -18,7 +17,7 @@ public class Session {
     @Column(name = "id")
     private int id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "client_id")
     private Client client;
 

@@ -37,28 +37,17 @@ public class SessionService {
     }
 
     @Transactional
-    public void updateSession(int id, Session session) {
-        session.setId(id);
-        sessionRepository.save(session);
-    }
-
-    @Transactional
     public void deleteSession(int id) {
         sessionRepository.deleteById(id);
     }
 
-    @Transactional
     public void startSession(Session session) {
         session.setSessionStartTime(LocalDateTime.now());
-        sessionRepository.save(session);
     }
 
-    @Transactional
-    public void endSession(int id) {
-        Session session = sessionRepository.findById(id).orElseThrow();
+    public void endSession(Session session) {
         session.setSessionEndTime(LocalDateTime.now());
         double hours = Duration.between(session.getSessionStartTime(), session.getSessionEndTime()).toHours();
         session.setTotalPrice(session.getTariff().getPrice() * hours);
-        sessionRepository.save(session);
     }
 }
