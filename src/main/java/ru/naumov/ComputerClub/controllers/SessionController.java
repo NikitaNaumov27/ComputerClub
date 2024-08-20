@@ -54,7 +54,9 @@ public class SessionController {
 
     @PostMapping("/start/{idClient}/{idComputer}/{idTariff}")
     public ResponseEntity<HttpStatus> startSession(@PathVariable int idClient, @PathVariable int idComputer,
-                                                   @PathVariable int idTariff) {
+                                                   @PathVariable int idTariff, BindingResult bindingResult) {
+
+       checkException(bindingResult);
        Session session = new Session();
        session.setClient(clientService.findClientById(idClient));
        session.setComputer(computerService.findComputerById(idComputer));

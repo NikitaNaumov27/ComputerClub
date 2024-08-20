@@ -1,7 +1,12 @@
 package ru.naumov.ComputerClub.dto.ClientDTO;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Setter
+@Getter
 public class ClientResponse {
     private List<ClientDTO> clients;
 
@@ -9,11 +14,4 @@ public class ClientResponse {
         this.clients = clients;
     }
 
-    public List<ClientDTO> getClients() {
-        return clients;
-    }
-
-    public void setClients(List<ClientDTO> clients) {
-        this.clients = clients;
-    }
 }

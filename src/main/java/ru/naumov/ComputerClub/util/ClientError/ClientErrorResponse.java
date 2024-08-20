@@ -1,5 +1,10 @@
 package ru.naumov.ComputerClub.util.ClientError;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class ClientErrorResponse {
     private String message;
     private long timestamp;
@@ -9,19 +14,4 @@ public class ClientErrorResponse {
         this.timestamp = timestamp;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
 }

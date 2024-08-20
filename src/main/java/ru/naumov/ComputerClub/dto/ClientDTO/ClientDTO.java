@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 public class ClientDTO {
 
-    @Getter
     @NotNull
     private int id;
 
