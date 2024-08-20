@@ -2,11 +2,15 @@ package ru.naumov.ComputerClub.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 // Клиент: содержит информацию о клиенте (имя, возраст, время начала сессии, время окончания сессии, статус активности).
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "Client")
 public class Client {
@@ -34,54 +38,11 @@ public class Client {
     @OneToOne(mappedBy = "client")
     private Session session;
 
-    public Client() {
-    }
-
     public Client(String clientName, int age, boolean isActive,
                   Session session) {
         this.clientName = clientName;
         this.age = age;
         this.isActive = isActive;
-        this.session = session;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public Session getSession() {
-        return session;
-    }
-
-    public void setSession(Session session) {
         this.session = session;
     }
 }
