@@ -35,14 +35,9 @@ public class Client {
     @NotNull
     private boolean isActive;
 
-    @OneToOne(mappedBy = "client")
-    private Session session;
-
-    public Client(String clientName, int age, boolean isActive,
-                  Session session) {
+    public Client(String clientName, int age, boolean isActive) {
         this.clientName = clientName;
         this.age = age;
         this.isActive = isActive;
-        this.session = session;
     }
 }

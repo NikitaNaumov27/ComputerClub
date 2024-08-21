@@ -11,9 +11,4 @@ public class ComputerClubProjectApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ComputerClubProjectApplication.class, args);
 	}
-
-	@Bean
-	ModelMapper modelMapper() {
-		return new ModelMapper();
-	}
 }

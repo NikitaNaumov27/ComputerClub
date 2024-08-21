@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.naumov.ComputerClub.dto.SessionDTO.SessionDTO;
 import ru.naumov.ComputerClub.dto.SessionDTO.SessionResponse;
 import ru.naumov.ComputerClub.models.Client;
+import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.models.Session;
+import ru.naumov.ComputerClub.models.Tariff;
 import ru.naumov.ComputerClub.services.ClientService;
 import ru.naumov.ComputerClub.services.ComputerService;
 import ru.naumov.ComputerClub.services.SessionService;
@@ -32,7 +34,9 @@ public class SessionController {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public SessionController(final SessionService sessionService, ClientService clientService, ComputerService computerService, TariffService tariffService, final ModelMapper modelMapper) {
+    public SessionController(SessionService sessionService, ClientService clientService,
+                             ComputerService computerService, TariffService tariffService,
+                             ModelMapper modelMapper) {
         this.sessionService = sessionService;
         this.clientService = clientService;
         this.computerService = computerService;
@@ -54,26 +58,38 @@ public class SessionController {
 
     @PostMapping("/start/{idClient}/{idComputer}/{idTariff}")
     public ResponseEntity<HttpStatus> startSession(@PathVariable int idClient, @PathVariable int idComputer,
-                                                   @PathVariable int idTariff, BindingResult bindingResult) {
-
-       checkException(bindingResult);
-       Session session = new Session();
-       session.setClient(clientService.findClientById(idClient));
-       session.setComputer(computerService.findComputerById(idComputer));
-       session.setTariff(tariffService.findTariffById(idTariff));
-       sessionService.startSession(session);
-       session.setTotalPrice(100);
-       sessionService.endSession(session);
-       sessionService.saveSession(session);
+                                                   @PathVariable int idTariff) {
+        Session session = new Session();
+        Client client = clientService.findClientById(idClient);
+        if (client == null) throw new SessionException("Клиента с таким id не существует (Пармаетры запроса:/{idClient}/{idComputer}/{idTariff})");
+        if (sessionService.findSessionByClient(client)!=null)throw new SessionException("Сессия для клиента с таким id уже существует");
+        session.setClient(client);
+        Computer computer = computerService.findComputerById(idComputer);
+        if (computer == null) throw new SessionException("Компьютера с таким id не существует (Пармаетры запроса:/{idClient}/{idComputer}/{idTariff})");
+        if (!computer.isStatus()) throw new SessionException("Этот компьютер уже занят :с");
+        computer.setStatus(false);
+        session.setComputer(computer);
+        Tariff tariff = tariffService.findTariffById(idTariff);
+        if (tariff == null) throw new SessionException("Тарифа с таким id не существует (Пармаетры запроса:/{idClient}/{idComputer}/{idTariff})");
+        session.setTariff(tariff);
+        sessionService.startSession(session);
+        sessionService.saveSession(session);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PatchMapping("/end/{id}")
     public ResponseEntity<HttpStatus> endSession(@PathVariable int id) {
-        Client client = clientService.findClientById(id);
-        Session session = client.getSession();
+        Session session = sessionService.findSessionByClient(clientService.findClientById(id));
         sessionService.endSession(session);
+        session.getComputer().setStatus(true);
         sessionService.saveSession(session);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteSession(@PathVariable int id) {
+        sessionService.deleteSession(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

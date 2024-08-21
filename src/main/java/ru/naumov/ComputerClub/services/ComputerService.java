@@ -44,4 +44,8 @@ public class ComputerService {
     public void deleteComputer(int id) {
         computerRepository.deleteById(id);
     }
+
+    public List<Computer> findComputersByStatusIsTrue(){
+        return computerRepository.findComputersByStatusIsTrue();
+    }
 }

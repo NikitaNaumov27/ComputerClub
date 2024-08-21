@@ -8,7 +8,7 @@ import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.models.Tariff;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,10 +24,10 @@ public class SessionDTO {
     private Tariff tariff;
 
     @NotNull
-    private LocalDate sessionStartTime;
+    private LocalDateTime sessionStartTime;
 
     @NotNull
-    private LocalDate sessionEndTime;
+    private LocalDateTime sessionEndTime;
 
     @NotNull
     @Min(0)

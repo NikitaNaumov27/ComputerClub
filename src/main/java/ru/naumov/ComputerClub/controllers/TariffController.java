@@ -12,7 +12,6 @@ import ru.naumov.ComputerClub.dto.TariffDTO.TariffDTO;
 import ru.naumov.ComputerClub.dto.TariffDTO.TariffResponse;
 import ru.naumov.ComputerClub.models.Tariff;
 import ru.naumov.ComputerClub.services.TariffService;
-import ru.naumov.ComputerClub.util.ClientError.ClientException;
 import ru.naumov.ComputerClub.util.TariffError.TariffErrorResponse;
 import ru.naumov.ComputerClub.util.TariffError.TariffException;
 

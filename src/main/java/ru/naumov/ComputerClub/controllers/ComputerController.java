@@ -12,7 +12,6 @@ import ru.naumov.ComputerClub.dto.ComputerDTO.ComputerDTO;
 import ru.naumov.ComputerClub.dto.ComputerDTO.ComputerResponse;
 import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.services.ComputerService;
-import ru.naumov.ComputerClub.util.ClientError.ClientException;
 import ru.naumov.ComputerClub.util.ComputerError.ComputerErrorResponse;
 import ru.naumov.ComputerClub.util.ComputerError.ComputerException;
 
@@ -41,6 +40,12 @@ public class ComputerController {
     @GetMapping("/{id}")
     public Computer getComputerById(@PathVariable int id) {
         return computerService.findComputerById(id);
+    }
+
+    @GetMapping("/free")
+    public ComputerResponse getAllFreeComputers() {
+        return new ComputerResponse(computerService.findComputersByStatusIsTrue().stream().map(this::convertToComputerDTO)
+                .collect(Collectors.toList()));
     }
 
     @PostMapping("/add")

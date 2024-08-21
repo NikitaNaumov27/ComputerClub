@@ -46,10 +46,10 @@ public class Session {
     @Column(name = "total_price")
     @NotNull
     @Min(0)
-    private double totalPrice;
+    private int totalPrice;
 
     public Session(Client client, Computer computer, Tariff tariff,
-                   LocalDateTime sessionStartTime, LocalDateTime sessionEndTime, double totalPrice) {
+                   LocalDateTime sessionStartTime, LocalDateTime sessionEndTime, int totalPrice) {
         this.client = client;
         this.computer = computer;
         this.tariff = tariff;

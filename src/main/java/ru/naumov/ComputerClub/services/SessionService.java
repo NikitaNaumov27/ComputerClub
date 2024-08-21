@@ -3,6 +3,7 @@ package ru.naumov.ComputerClub.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.models.Session;
 import ru.naumov.ComputerClub.repositories.SessionRepository;
 
@@ -41,13 +42,21 @@ public class SessionService {
         sessionRepository.deleteById(id);
     }
 
+    public Session findSessionByClient(Client client) {
+        return sessionRepository.findSessionByClient(client);
+    }
+
     public void startSession(Session session) {
         session.setSessionStartTime(LocalDateTime.now());
+        session.setSessionEndTime(LocalDateTime.now().plusHours(1));
+        session.setTotalPrice(session.getTariff().getPrice());
     }
 
     public void endSession(Session session) {
         session.setSessionEndTime(LocalDateTime.now());
-        double hours = Duration.between(session.getSessionStartTime(), session.getSessionEndTime()).toHours();
+        int hours = (int) Duration.between(session.getSessionStartTime(), session.getSessionEndTime()).toHours();
+        if (Duration.between(session.getSessionStartTime(), LocalDateTime.now()).toMinutes() > 0) {}
+            hours++;
         session.setTotalPrice(session.getTariff().getPrice() * hours);
     }
 }
