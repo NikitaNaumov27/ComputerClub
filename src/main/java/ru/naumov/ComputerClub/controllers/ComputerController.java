@@ -8,43 +8,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ru.naumov.ComputerClub.dto.ComputerDTO.ComputerDTO;
-import ru.naumov.ComputerClub.dto.ComputerDTO.ComputerResponse;
+import ru.naumov.ComputerClub.dto.BaseResponse;
+import ru.naumov.ComputerClub.dto.ComputerDTO;
+import ru.naumov.ComputerClub.util.mappers.BaseMapper;
 import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.services.ComputerService;
-import ru.naumov.ComputerClub.util.ComputerError.ComputerErrorResponse;
-import ru.naumov.ComputerClub.util.ComputerError.ComputerException;
+import ru.naumov.ComputerClub.util.exceptions.ComputerException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/computers")
-public class ComputerController {
+public class ComputerController extends BaseMapper<Computer, ComputerDTO> {
 
     private final ComputerService computerService;
-    private final ModelMapper modelMapper;
 
     @Autowired
     public ComputerController(ComputerService computerService, ModelMapper modelMapper) {
+        super(modelMapper);
         this.computerService = computerService;
-        this.modelMapper = modelMapper;
     }
 
     @GetMapping()
-    public ComputerResponse getAllComputers() {
-        return new ComputerResponse(computerService.findAllComputers().stream().map(this::convertToComputerDTO)
+    public BaseResponse<ComputerDTO> getAllComputers() {
+        return new BaseResponse<>(computerService.findAllComputers().stream().map(a -> convertToDto(a, ComputerDTO.class))
                 .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public Computer getComputerById(@PathVariable int id) {
-        return computerService.findComputerById(id);
+    public ComputerDTO getComputerById(@PathVariable int id) {
+        return convertToDto(computerService.findComputerById(id), ComputerDTO.class);
     }
 
     @GetMapping("/free")
-    public ComputerResponse getAllFreeComputers() {
-        return new ComputerResponse(computerService.findComputersByStatusIsTrue().stream().map(this::convertToComputerDTO)
+    public BaseResponse<ComputerDTO> getAllFreeComputers() {
+        return new BaseResponse<>(computerService.findComputersByStatusIsTrue().stream().map(a -> convertToDto(a, ComputerDTO.class))
                 .collect(Collectors.toList()));
     }
 
@@ -52,7 +51,7 @@ public class ComputerController {
     public ResponseEntity<HttpStatus> addComputer(@Valid @RequestBody ComputerDTO computerDTO,
                                                   BindingResult bindingResult) {
         checkException(bindingResult);
-        computerService.saveComputer(convertToComputer(computerDTO));
+        computerService.saveComputer(convertToEntity(computerDTO, Computer.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -60,7 +59,7 @@ public class ComputerController {
     public ResponseEntity<HttpStatus> updateComputer(@RequestBody @Valid ComputerDTO computerDTO,
                                                      @PathVariable int id, BindingResult bindingResult) {
         checkException(bindingResult);
-        computerService.updateComputer(id, convertToComputer(computerDTO));
+        computerService.updateComputer(id, convertToEntity(computerDTO, Computer.class));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -80,20 +79,5 @@ public class ComputerController {
             }
             throw new ComputerException(errorMsg.toString());
         }
-    }
-
-    private ComputerDTO convertToComputerDTO(Computer computer) {
-        return modelMapper.map(computer, ComputerDTO.class);
-    }
-
-    private Computer convertToComputer(ComputerDTO computerDTO) {
-        return modelMapper.map(computerDTO, Computer.class);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ComputerErrorResponse> handleException(final Exception ex) {
-        ComputerErrorResponse response = new ComputerErrorResponse(
-                ex.getMessage(), System.currentTimeMillis());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

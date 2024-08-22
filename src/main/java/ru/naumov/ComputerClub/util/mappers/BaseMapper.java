@@ -1,5 +1,4 @@
-package ru.naumov.ComputerClub.mappers;
-
+package ru.naumov.ComputerClub.util.mappers;
 
 import org.modelmapper.ModelMapper;
 
@@ -19,4 +18,3 @@ public abstract class BaseMapper<T, D> {
         return modelMapper.map(dto, entityClass);
     }
 }
-

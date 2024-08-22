@@ -8,45 +8,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ru.naumov.ComputerClub.dto.TariffDTO.TariffDTO;
-import ru.naumov.ComputerClub.dto.TariffDTO.TariffResponse;
+import ru.naumov.ComputerClub.dto.BaseResponse;
+import ru.naumov.ComputerClub.dto.TariffDTO;
+import ru.naumov.ComputerClub.util.mappers.BaseMapper;
 import ru.naumov.ComputerClub.models.Tariff;
 import ru.naumov.ComputerClub.services.TariffService;
-import ru.naumov.ComputerClub.util.TariffError.TariffErrorResponse;
-import ru.naumov.ComputerClub.util.TariffError.TariffException;
+import ru.naumov.ComputerClub.util.exceptions.TariffException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tariffs")
-public class TariffController {
+public class TariffController extends BaseMapper<Tariff, TariffDTO> {
 
     private final TariffService tariffService;
-    private final ModelMapper modelMapper;
 
     @Autowired
     public TariffController(TariffService tariffService, ModelMapper modelMapper) {
+        super(modelMapper);
         this.tariffService = tariffService;
-        this.modelMapper = modelMapper;
     }
 
     @GetMapping()
-    public TariffResponse getAllTariffs() {
-        return new TariffResponse(tariffService.findAllTariffs().stream().map(this::convertToTariffDTO)
+    public BaseResponse<TariffDTO> getAllTariffs() {
+        return new BaseResponse<>(tariffService.findAllTariffs().stream().map(a -> convertToDto(a, TariffDTO.class))
                 .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public Tariff getTariffById(@PathVariable int id) {
-        return tariffService.findTariffById(id);
+    public TariffDTO getTariffById(@PathVariable int id) {
+        return convertToDto(tariffService.findTariffById(id), TariffDTO.class);
     }
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addTariff(@RequestBody @Valid TariffDTO tariffDTO,
                                                     BindingResult bindingResult) {
         checkException(bindingResult);
-        tariffService.saveTariff(convertToTariff(tariffDTO));
+        tariffService.saveTariff(convertToEntity(tariffDTO, Tariff.class));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -54,7 +53,7 @@ public class TariffController {
     public ResponseEntity<HttpStatus> updateTariff(@RequestBody @Valid TariffDTO tariffDTO,
                                                        @PathVariable int id, BindingResult bindingResult) {
         checkException(bindingResult);
-        tariffService.updateTariff(id, convertToTariff(tariffDTO));
+        tariffService.updateTariff(id, convertToEntity(tariffDTO, Tariff.class));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -74,20 +73,5 @@ public class TariffController {
             }
             throw new TariffException(errorMsg.toString());
         }
-    }
-
-    private TariffDTO convertToTariffDTO(Tariff tariff) {
-        return modelMapper.map(tariff, TariffDTO.class);
-    }
-
-    private Tariff convertToTariff(TariffDTO tariffDTO) {
-        return modelMapper.map(tariffDTO, Tariff.class);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<TariffErrorResponse> handleException(final Exception ex) {
-        TariffErrorResponse response = new TariffErrorResponse(
-                ex.getMessage(), System.currentTimeMillis());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.repositories.ClientRepository;
+import ru.naumov.ComputerClub.util.exceptions.ClientException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class ClientService {
 
     public Client findClientById(int id) {
         Optional<Client> client = clientRepository.findById(id);
-        return client.orElse(null);
+        return client.orElseThrow( () -> new ClientException("Client not found") );
     }
 
     @Transactional

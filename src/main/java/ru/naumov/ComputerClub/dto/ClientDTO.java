@@ -1,4 +1,4 @@
-package ru.naumov.ComputerClub.dto.ClientDTO;
+package ru.naumov.ComputerClub.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;

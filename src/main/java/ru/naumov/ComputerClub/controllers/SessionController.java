@@ -7,8 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ru.naumov.ComputerClub.dto.SessionDTO.SessionDTO;
-import ru.naumov.ComputerClub.dto.SessionDTO.SessionResponse;
+import ru.naumov.ComputerClub.dto.BaseResponse;
+import ru.naumov.ComputerClub.dto.SessionDTO;
+import ru.naumov.ComputerClub.util.mappers.BaseMapper;
 import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.models.Session;
@@ -17,44 +18,41 @@ import ru.naumov.ComputerClub.services.ClientService;
 import ru.naumov.ComputerClub.services.ComputerService;
 import ru.naumov.ComputerClub.services.SessionService;
 import ru.naumov.ComputerClub.services.TariffService;
-import ru.naumov.ComputerClub.util.SessionError.SessionErrorResponse;
-import ru.naumov.ComputerClub.util.SessionError.SessionException;
+import ru.naumov.ComputerClub.util.exceptions.SessionException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sessions")
-public class SessionController {
+public class SessionController extends BaseMapper<Session, SessionDTO> {
 
     private final SessionService sessionService;
     private final ClientService clientService;
     private final ComputerService computerService;
     private final TariffService tariffService;
-    private final ModelMapper modelMapper;
 
     @Autowired
     public SessionController(SessionService sessionService, ClientService clientService,
                              ComputerService computerService, TariffService tariffService,
                              ModelMapper modelMapper) {
+        super(modelMapper);
         this.sessionService = sessionService;
         this.clientService = clientService;
         this.computerService = computerService;
         this.tariffService = tariffService;
-        this.modelMapper = modelMapper;
     }
 
     @GetMapping()
-    public SessionResponse getAllSessions() {
-        return new SessionResponse(sessionService.findAllSessions().stream().map(this::convertToSessionDTO)
+    public BaseResponse<SessionDTO> getAllSessions() {
+        return new BaseResponse<>(sessionService.findAllSessions().stream().map(a -> convertToDto(a, SessionDTO.class))
                 .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public Session getSessionsByClient(@PathVariable int id) {
-        return sessionService.findSessionById(id);
+    public SessionDTO getSessionsByClient(@PathVariable int id) {
+        return convertToDto(sessionService.findSessionById(id), SessionDTO.class);
     }
-
 
     @PostMapping("/start/{idClient}/{idComputer}/{idTariff}")
     public ResponseEntity<HttpStatus> startSession(@PathVariable int idClient, @PathVariable int idComputer,
@@ -86,7 +84,6 @@ public class SessionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteSession(@PathVariable int id) {
         sessionService.deleteSession(id);
@@ -103,20 +100,5 @@ public class SessionController {
             }
             throw new SessionException(errorMsg.toString());
         }
-    }
-
-    private SessionDTO convertToSessionDTO(Session session) {
-        return modelMapper.map(session, SessionDTO.class);
-    }
-
-    private Session convertToSession(SessionDTO sessionDTO) {
-        return modelMapper.map(sessionDTO, Session.class);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<SessionErrorResponse> handleException(final Exception ex) {
-        SessionErrorResponse response = new SessionErrorResponse(
-                ex.getMessage(), System.currentTimeMillis());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

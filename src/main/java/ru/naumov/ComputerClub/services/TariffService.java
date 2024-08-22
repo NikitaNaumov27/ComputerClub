@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.naumov.ComputerClub.models.Tariff;
 import ru.naumov.ComputerClub.repositories.TariffRepositories;
+import ru.naumov.ComputerClub.util.exceptions.TariffException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class TariffService {
 
     public Tariff findTariffById(int id) {
         Optional<Tariff> tariff = tariffRepositories.findById(id);
-        return tariff.orElse(null);
+        return tariff.orElseThrow( () -> new TariffException("Tariff not found") );
     }
 
     @Transactional

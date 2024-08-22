@@ -1,4 +1,4 @@
-package ru.naumov.ComputerClub.dto.SessionDTO;
+package ru.naumov.ComputerClub.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

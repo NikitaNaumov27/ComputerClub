@@ -1,4 +1,4 @@
-package ru.naumov.ComputerClub.dto.ComputerDTO;
+package ru.naumov.ComputerClub.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -8,45 +8,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import ru.naumov.ComputerClub.dto.ClientDTO.ClientDTO;
-import ru.naumov.ComputerClub.dto.ClientDTO.ClientResponse;
+import ru.naumov.ComputerClub.dto.BaseResponse;
+import ru.naumov.ComputerClub.dto.ClientDTO;
+import ru.naumov.ComputerClub.util.mappers.BaseMapper;
 import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.services.ClientService;
-import ru.naumov.ComputerClub.util.ClientError.ClientErrorResponse;
-import ru.naumov.ComputerClub.util.ClientError.ClientException;
+import ru.naumov.ComputerClub.util.exceptions.ClientException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/clients")
-public class ClientController {
+public class ClientController extends BaseMapper<Client, ClientDTO> {
 
     private final ClientService clientService;
-    private final ModelMapper modelMapper;
 
     @Autowired
     public ClientController(ClientService clientService, ModelMapper modelMapper) {
+        super(modelMapper);
         this.clientService = clientService;
-        this.modelMapper = modelMapper;
     }
 
     @GetMapping()
-    public ClientResponse getAllClients() {
-        return new ClientResponse(clientService.findAllClients().stream().map(this::convertToClientDTO)
+    public BaseResponse<ClientDTO> getAllClients() {
+        return new BaseResponse<>(clientService.findAllClients().stream().map(a -> convertToDto(a, ClientDTO.class))
                 .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public Client getClientById(@PathVariable int id) {
-        return clientService.findClientById(id);
+    public ClientDTO getClientById(@PathVariable int id) {
+        return convertToDto(clientService.findClientById(id), ClientDTO.class);
     }
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addClient(@RequestBody @Valid ClientDTO clientDTO,
                                                 BindingResult bindingResult) {
         checkException(bindingResult);
-        clientService.saveClient(convertToClient(clientDTO));
+        clientService.saveClient(convertToEntity(clientDTO, Client.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -54,7 +53,7 @@ public class ClientController {
     public ResponseEntity<HttpStatus> updateClient(@RequestBody @Valid ClientDTO clientDTO,
                                                    @PathVariable int id, BindingResult bindingResult) {
         checkException(bindingResult);
-        clientService.updateClient(id, convertToClient(clientDTO));
+        clientService.updateClient(id, convertToEntity(clientDTO, Client.class));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -74,20 +73,5 @@ public class ClientController {
             }
             throw new ClientException(errorMsg.toString());
         }
-    }
-
-    private ClientDTO convertToClientDTO(Client client) {
-        return modelMapper.map(client, ClientDTO.class);
-    }
-
-    private Client convertToClient(ClientDTO clientDTO) {
-        return modelMapper.map(clientDTO, Client.class);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ClientErrorResponse> handleException(final Exception ex) {
-        ClientErrorResponse response = new ClientErrorResponse(
-                ex.getMessage(), System.currentTimeMillis());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

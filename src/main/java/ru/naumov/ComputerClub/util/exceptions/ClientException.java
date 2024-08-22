@@ -1,4 +1,4 @@
-package ru.naumov.ComputerClub.util.ClientError;
+package ru.naumov.ComputerClub.util.exceptions;
 
 public class ClientException extends RuntimeException {
     public ClientException(String msg) {

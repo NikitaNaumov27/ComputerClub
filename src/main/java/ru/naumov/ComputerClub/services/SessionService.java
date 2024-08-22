@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.models.Session;
 import ru.naumov.ComputerClub.repositories.SessionRepository;
+import ru.naumov.ComputerClub.util.exceptions.SessionException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public class SessionService {
 
     public Session findSessionById(int id) {
         Optional<Session> session = sessionRepository.findById(id);
-        return session.orElse(null);
+        return session.orElseThrow( () -> new SessionException("Session not found") );
     }
 
     @Transactional
@@ -55,8 +56,7 @@ public class SessionService {
     public void endSession(Session session) {
         session.setSessionEndTime(LocalDateTime.now());
         int hours = (int) Duration.between(session.getSessionStartTime(), session.getSessionEndTime()).toHours();
-        if (Duration.between(session.getSessionStartTime(), LocalDateTime.now()).toMinutes() > 0) {}
-            hours++;
+        if (Duration.between(session.getSessionStartTime(), LocalDateTime.now()).toMinutes() > 0) hours++;
         session.setTotalPrice(session.getTariff().getPrice() * hours);
     }
 }

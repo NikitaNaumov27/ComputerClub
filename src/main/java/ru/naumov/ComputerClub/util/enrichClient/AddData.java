@@ -1,4 +1,4 @@
-package ru.naumov.ComputerClub.DebugClient;
+package ru.naumov.ComputerClub.util.enrichClient;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.repositories.ComputerRepository;
+import ru.naumov.ComputerClub.util.exceptions.ClientException;
+import ru.naumov.ComputerClub.util.exceptions.ComputerException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public class ComputerService {
 
     public Computer findComputerById(int id) {
         Optional<Computer> computer = computerRepository.findById(id);
-        return computer.orElse(null);
+        return computer.orElseThrow( () -> new ComputerException("Computer not found") );
     }
 
     @Transactional
