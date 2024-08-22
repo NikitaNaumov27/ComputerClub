@@ -10,5 +10,5 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class BaseResponse<T> {
-    private List<T> list;
+    private List<T> response;
 }

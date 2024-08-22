@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "Session")
@@ -23,7 +25,7 @@ public class Session {
     @Column(name = "id")
     private int id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
 

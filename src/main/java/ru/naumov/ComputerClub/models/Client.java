@@ -3,13 +3,15 @@ package ru.naumov.ComputerClub.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 // Клиент: содержит информацию о клиенте (имя, возраст, время начала сессии, время окончания сессии, статус активности).
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "Client")

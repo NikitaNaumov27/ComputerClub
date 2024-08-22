@@ -6,12 +6,14 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 // Тариф: содержит данные о тарифных планах (название, цена за час, дополнительные услуги).
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "Tariff")
