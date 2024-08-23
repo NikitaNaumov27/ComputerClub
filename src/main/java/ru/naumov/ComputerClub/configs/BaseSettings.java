@@ -1,4 +1,4 @@
-package ru.naumov.ComputerClub.config;
+package ru.naumov.ComputerClub.configs;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

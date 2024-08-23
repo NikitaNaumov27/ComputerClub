@@ -46,9 +46,9 @@ public class SessionController extends BaseMapper<Session, SessionDTO> {
                 .collect(Collectors.toList()));
     }
 
-    @GetMapping("/{id}")
-    public SessionDTO getSessionsByClient(@PathVariable int id) {
-        return convertToDto(sessionService.findSessionById(id), SessionDTO.class);
+    @GetMapping("/{idSession}")
+    public SessionDTO getSessionsByClient(@PathVariable int idSession) {
+        return convertToDto(sessionService.findSessionById(idSession), SessionDTO.class);
     }
 
     @GetMapping("/actives")
@@ -83,9 +83,9 @@ public class SessionController extends BaseMapper<Session, SessionDTO> {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteSession(@PathVariable int id) {
-        sessionService.deleteSession(id);
+    @DeleteMapping("/{idSession}")
+    public ResponseEntity<HttpStatus> deleteSession(@PathVariable int idSession) {
+        sessionService.deleteSession(idSession);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

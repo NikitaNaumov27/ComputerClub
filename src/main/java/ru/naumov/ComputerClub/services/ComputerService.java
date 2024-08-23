@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.repositories.ComputerRepository;
 import ru.naumov.ComputerClub.util.exceptions.ComputerException;
@@ -56,5 +58,17 @@ public class ComputerService {
     public List<Computer> findComputersByStatusIsTrue(){
         log.info("In findComputersByStatusIsTrue - finding all computers by status true");
         return computerRepository.findComputersByStatusIsTrue();
+    }
+
+    public void checkException(BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMsg = new StringBuilder();
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors) {
+                errorMsg.append(error.getField()).append(" - ")
+                        .append(error.getDefaultMessage()).append(";");
+            }
+            throw new ComputerException(errorMsg.toString());
+        }
     }
 }

@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import ru.naumov.ComputerClub.models.Tariff;
 import ru.naumov.ComputerClub.repositories.TariffRepositories;
 import ru.naumov.ComputerClub.util.exceptions.TariffException;
@@ -51,5 +53,17 @@ public class TariffService {
     public void deleteTariff(int id) {
         log.info("In deleteTariff - tariff with id: {}", id);
         tariffRepositories.deleteById(id);
+    }
+
+    public void checkException(BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMsg = new StringBuilder();
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors) {
+                errorMsg.append(error.getField()).append(" - ")
+                        .append(error.getDefaultMessage()).append(";");
+            }
+            throw new TariffException(errorMsg.toString());
+        }
     }
 }

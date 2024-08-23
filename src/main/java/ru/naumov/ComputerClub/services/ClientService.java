@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import ru.naumov.ComputerClub.models.Client;
 import ru.naumov.ComputerClub.repositories.ClientRepository;
 import ru.naumov.ComputerClub.util.exceptions.ClientException;
@@ -49,5 +51,17 @@ public class ClientService {
     public void deleteClient(int id) {
         log.info("In deleteClient - client with id: {}", id);
         clientRepository.deleteById(id);
+    }
+
+    public void checkException(BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMsg = new StringBuilder();
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors) {
+                errorMsg.append(error.getField()).append(" - ")
+                        .append(error.getDefaultMessage()).append(";");
+            }
+            throw new ClientException(errorMsg.toString());
+        }
     }
 }

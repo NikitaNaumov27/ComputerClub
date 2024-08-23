@@ -6,16 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.naumov.ComputerClub.dto.BaseResponse;
 import ru.naumov.ComputerClub.dto.ComputerDTO;
 import ru.naumov.ComputerClub.util.mappers.BaseMapper;
 import ru.naumov.ComputerClub.models.Computer;
 import ru.naumov.ComputerClub.services.ComputerService;
-import ru.naumov.ComputerClub.util.exceptions.ComputerException;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,9 +33,9 @@ public class ComputerController extends BaseMapper<Computer, ComputerDTO> {
                 .collect(Collectors.toList()));
     }
 
-    @GetMapping("/{id}")
-    public ComputerDTO getComputerById(@PathVariable int id) {
-        return convertToDto(computerService.findComputerById(id), ComputerDTO.class);
+    @GetMapping("/{idComputer}")
+    public ComputerDTO getComputerById(@PathVariable int idComputer) {
+        return convertToDto(computerService.findComputerById(idComputer), ComputerDTO.class);
     }
 
     @GetMapping("/free")
@@ -50,34 +47,22 @@ public class ComputerController extends BaseMapper<Computer, ComputerDTO> {
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addComputer(@Valid @RequestBody ComputerDTO computerDTO,
                                                   BindingResult bindingResult) {
-        checkException(bindingResult);
+        computerService.checkException(bindingResult);
         computerService.saveComputer(convertToEntity(computerDTO, Computer.class));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{idComputer}")
     public ResponseEntity<HttpStatus> updateComputer(@RequestBody @Valid ComputerDTO computerDTO,
-                                                     @PathVariable int id, BindingResult bindingResult) {
-        checkException(bindingResult);
-        computerService.updateComputer(id, convertToEntity(computerDTO, Computer.class));
+                                                     @PathVariable int idComputer, BindingResult bindingResult) {
+        computerService.checkException(bindingResult);
+        computerService.updateComputer(idComputer, convertToEntity(computerDTO, Computer.class));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteComputer(@PathVariable int id){
-        computerService.deleteComputer(id);
+    @DeleteMapping("/{idComputer}")
+    public ResponseEntity<HttpStatus> deleteComputer(@PathVariable int idComputer){
+        computerService.deleteComputer(idComputer);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    public void checkException(BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            StringBuilder errorMsg = new StringBuilder();
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for (FieldError error : errors) {
-                errorMsg.append(error.getField()).append(" - ")
-                        .append(error.getDefaultMessage()).append(";");
-            }
-            throw new ComputerException(errorMsg.toString());
-        }
     }
 }
